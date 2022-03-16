@@ -18,6 +18,28 @@ namespace HelperForNotEditor
             InitializeComponent();
         }
 
+        public void ChangeForm(string type)
+        {
+            if(type == "LogEvents")
+            {
+                button2.Visible = true;
+                change_ObjDoNotDrop_button.Visible = false;
+                CheckEnergyButton.Visible = false;
+            }
+            else if(type == "ObjDoNotDrop")
+            {
+                button2.Visible = false;
+                change_ObjDoNotDrop_button.Visible = true;
+                CheckEnergyButton.Visible = false;
+            }
+            else if(type == "CheckEnergy")
+            {
+                button2.Visible = false;
+                change_ObjDoNotDrop_button.Visible = false;
+                CheckEnergyButton.Visible = true;
+            }
+        }
+
         private string folderName;
 
         private void button1_Click(object sender, EventArgs e)
@@ -537,7 +559,8 @@ namespace HelperForNotEditor
                     }
                 }
             }
-            richTextBox1.Text = richTextBox1.Text + "Замена успешно завершена!\n";
+            richTextBox1.Text = richTextBox1.Text + "Подбор файлов завершен!\n";
+            richTextBox1.ScrollToCaret();
             goFilesButton.Visible = true;
             filesArrGlobal = filesArr;
         }

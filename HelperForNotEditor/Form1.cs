@@ -146,13 +146,5 @@ namespace HelperForNotEditor
         {
 
         }
-
-        private void button2_Click_1(object sender, EventArgs e)
-        {
-            LogEvents_changer a = new LogEvents_changer();
-            this.Hide();
-            a.ShowDialog();
-            this.Show();
-        }
     }
 }
