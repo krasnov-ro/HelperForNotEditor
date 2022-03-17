@@ -10,12 +10,14 @@ namespace HelperForNotEditor
 {
     public partial class menuForm : Form
     {
+        // !!!       !!!       !!!             !!!
+        // при изменении позиций в массиве, придется скорректировать номер в функции goWork_Click()
         string[] comboItems = {
             "Исключение ненужных строк",                                        ///0
             "Произвести замену числового кода на словарный код в LogEvents",    ///1
             "Закомментирование всех строк вызова interface.ObjDoNotDrop",       ///2
             "Проставление в assets вызов функции CheckEnergy()",                ///3
-            "Перенос f2p файлов в assets"                                       ///4
+            "Перенос f2p файлов в assets (копируем)"                            ///4
         };
 
         public menuForm()
@@ -62,9 +64,8 @@ namespace HelperForNotEditor
             }
             else if(comboBox1.SelectedItem == comboItems[4])
             {
-                LogEvents_changer a = new LogEvents_changer();
+                f2pFilesForm a = new f2pFilesForm();
                 this.Hide();
-                a.ChangeForm("f2pFiles");
                 a.ShowDialog();
                 this.Show();
             }
