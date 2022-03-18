@@ -375,6 +375,20 @@ namespace HelperForNotEditor
             {
                 richTextBox1.Text = richTextBox1.Text + "Произведена замена ObjDoNotDrop(); в файле " + file + "\n";
             }
+
+            inputTextOld = inputText;
+            inputText = inputText.Replace(" ObjDoNotDrop()", "--ObjDoNotDrop()");
+            if (!inputText.Equals(inputTextOld))
+            {
+                richTextBox1.Text = richTextBox1.Text + "Произведена замена ObjDoNotDrop() в файле " + file + "\n";
+            }
+
+            inputTextOld = inputText;
+            inputText = inputText.Replace(" ObjDoNotDrop(", "--ObjDoNotDrop()");
+            if (!inputText.Equals(inputTextOld))
+            {
+                richTextBox1.Text = richTextBox1.Text + "Произведена замена ObjDoNotDrop в файле " + file + "\n";
+            }
             #endregion
 
             if (!inputFirst.Equals(inputText))

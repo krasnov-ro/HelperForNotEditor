@@ -31,14 +31,14 @@ namespace HelperForNotEditor
 
         private void goWork_Click(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedItem == comboItems[0])
+            if (comboBox1.SelectedItem.ToString() == comboItems[0])
             {
                 Form1 a = new Form1();
                 this.Hide();
                 a.ShowDialog();
                 this.Show();
             }
-            else if(comboBox1.SelectedItem == comboItems[1])
+            else if(comboBox1.SelectedItem.ToString() == comboItems[1])
             {
                 LogEvents_changer a = new LogEvents_changer();
                 this.Hide();
@@ -46,7 +46,7 @@ namespace HelperForNotEditor
                 a.ShowDialog();
                 this.Show();
             }
-            else if(comboBox1.SelectedItem == comboItems[2])
+            else if(comboBox1.SelectedItem.ToString() == comboItems[2])
             {
                 LogEvents_changer a = new LogEvents_changer();
                 this.Hide();
@@ -54,7 +54,7 @@ namespace HelperForNotEditor
                 a.ShowDialog();
                 this.Show();
             }
-            else if(comboBox1.SelectedItem == comboItems[3])
+            else if(comboBox1.SelectedItem.ToString() == comboItems[3])
             {
                 LogEvents_changer a = new LogEvents_changer();
                 this.Hide();
@@ -62,7 +62,7 @@ namespace HelperForNotEditor
                 a.ShowDialog();
                 this.Show();
             }
-            else if(comboBox1.SelectedItem == comboItems[4])
+            else if(comboBox1.SelectedItem.ToString() == comboItems[4])
             {
                 f2pFilesForm a = new f2pFilesForm();
                 this.Hide();
