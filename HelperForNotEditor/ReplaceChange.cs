@@ -177,57 +177,90 @@ namespace HelperForNotEditor
 
         private List<string> GetFunctions(string inputText, string code, bool print)
         {
+            if (code.Contains("use_")) 
+            {
+                int i = 9;
+            }
             List<string> getFunctions = new List<string>();
             var inputTextLines = inputText.Split("\n");
-
+            int endCount = 0; //считаем сколько end надо для закрытия блока кода 
+            string value = string.Empty; //название события, например: "get_compas1"
+            int startIndexLine = -1; // Начальный индекс строки объявления функции
+            int cuurentLineIndex = -1; // Индекс текущей строки
+            int functionEndIndex = -1; // Индекс закрытия функции end; или end
 
             foreach (var line in inputTextLines)
             {
                 if (line.Contains("function private." + code))
                 {
-                    var startIndexLine = inputText.IndexOf(line); // Начальный индекс строки объявления функции
-                    var functionEndIndex = inputText.IndexOf("function p", startIndexLine + line.Length); // Начальный индекс обьявления следующей функции
-                    var checkStarsIndex = inputText.IndexOf("****", startIndexLine + line.Length);
-                    if (checkStarsIndex < functionEndIndex)
+                    if (!(line.Substring(0, 2) == "--"))
                     {
-                        functionEndIndex = checkStarsIndex;
-                    }
-                    // Обрезаем текущую функцию до следующей
-                    var inputTextFunction1 = inputText.Substring(startIndexLine, functionEndIndex - startIndexLine);
-                    if (!inputTextFunction1.Contains("if port_common.CheckEnergy("))
-                    {
+                        endCount++;
+                        startIndexLine = inputText.IndexOf(line); // Начальный индекс строки объявления функции
+
                         //Вырезаем название события, например: "get_compas1"
-                        var value = line.Substring(line.IndexOf(code), line.IndexOf("(") - line.IndexOf(code));
-                        if (!value.Contains(code + "collect"))
-                        {
-                            getFunctions.Add(inputTextFunction1);
-                            if (print == true)
-                                richTextBox1.Text = richTextBox1.Text + value + ";  ";
-                        }
+                        value = line.Substring(line.IndexOf(code), line.IndexOf("(") - line.IndexOf(code));
+                        cuurentLineIndex = startIndexLine;
                     }
                 }
                 else if (line.Contains("function public." + code))
                 {
-                    var startIndexLine = inputText.IndexOf(line); // Начальный индекс строки объявления функции
-                    var functionEndIndex = inputText.IndexOf("function p", startIndexLine + line.Length); // Начальный индекс обьявления следующей функции
-                    var checkStarsIndex = inputText.IndexOf("****", startIndexLine + line.Length);
-                    if (checkStarsIndex < functionEndIndex)
+                    if (!(line.Substring(0, 2) == "--"))
                     {
-                        functionEndIndex = checkStarsIndex;
+                        endCount++;
+                        startIndexLine = inputText.IndexOf(line); // Начальный индекс строки объявления функции
+
+                        //Вырезаем название события, например: "get_compas1"
+                        value = line.Substring(line.IndexOf(code), line.IndexOf("(") - line.IndexOf(code));
+                        cuurentLineIndex = startIndexLine;
                     }
+                }
+                
+                if (startIndexLine > -1)
+                {
+                    cuurentLineIndex = inputText.IndexOf(line, cuurentLineIndex);
+                    if (
+                        (line.Contains("if ") && line.Contains(" then"))
+                     || (line.Contains("for ") && line.Contains(" do"))
+                     || (line.Contains("while ") && line.Contains(" do"))
+                     || (line.Contains("= function(")))
+                    {
+                        endCount++;
+                        if (line.Contains(" end\n") || line.Contains(" end;") || line.Contains(" end\r") || line.Contains(" end;\r"))
+                        {
+                            endCount--;
+                        }
+                    }
+                    else if (line.Trim() == "end;" || line.Trim() == "end" || line.Trim() == "end\r" || line.Trim() == "end;\r")
+                    {
+                        if (endCount > 0)
+                        {
+                            endCount--;
+                            if (endCount == 0) // Функция закрылась
+                            {
+                                functionEndIndex = inputText.IndexOf(line, cuurentLineIndex) + line.Length;
+                                cuurentLineIndex = cuurentLineIndex + line.Length;
+                            }
+                        }
+                    }
+                }
+
+                if(startIndexLine > -1 && functionEndIndex > startIndexLine)
+                {
                     // Обрезаем текущую функцию до следующей
                     var inputTextFunction1 = inputText.Substring(startIndexLine, functionEndIndex - startIndexLine);
                     if (!inputTextFunction1.Contains("if port_common.CheckEnergy("))
                     {
-                        //Вырезаем название события, например: "get_compas1"
-                        var value = line.Substring(line.IndexOf(code), line.IndexOf("(") - line.IndexOf(code));
                         if (!value.Contains(code + "collect"))
                         {
-                            getFunctions.Add(inputTextFunction1);
+                            getFunctions.Add(inputTextFunction1); // Добавляем функцию в скисок функций этого файла
                             if (print == true)
                                 richTextBox1.Text = richTextBox1.Text + value + ";  ";
                         }
                     }
+                    startIndexLine = -1;
+                    functionEndIndex = -1;
+                    cuurentLineIndex = startIndexLine;
                 }
             }
 
@@ -255,8 +288,9 @@ namespace HelperForNotEditor
 
                 var funcText = funcsGet_Global[counterGet];
                 var lines = funcText.Split("\n");
-                var value = lines[0].Substring(lines[0].IndexOf("get_"), lines[0].IndexOf("(") - lines[0].IndexOf("get_")).Trim();
                 var resultTextFunc = string.Empty;
+
+                var value = lines[0].Substring(lines[0].IndexOf("get_"), lines[0].IndexOf("(") - lines[0].IndexOf("get_")).Trim();
                 if (funcText.Contains("-+-+-"))
                 {
                     var textForLine0 = lines[0].Replace("()", "(flag)").Replace("-+-+-", "");
@@ -266,10 +300,10 @@ namespace HelperForNotEditor
                     RichTextColor("if port_common.CheckEnergy(\"" + value + "\") or flag then\n", Color.Green, checkEnergyIndex);
                     RichTextColor("(flag)", Color.Green, richTextBox1.Text.IndexOf("(flag)"));
                 }
-                else 
+                else
                 {
                     resultTextFunc = funcText.Replace(lines[0], lines[0] + "\n  if port_common.CheckEnergy(\"" + value + "\") then\n");
-                    var lastEndIndex = resultTextFunc.LastIndexOf("end;");
+                    var lastEndIndex = resultTextFunc.LastIndexOf("end");
                     resultTextFunc = resultTextFunc.Insert(lastEndIndex, "end;\n");
                     richTextBox1.Text = richTextBox1.Text + resultTextFunc;
                     var checkEnergyIndex = richTextBox1.Text.IndexOf("if port_common.CheckEnergy(\"" + value + "\") then\n");
@@ -278,6 +312,7 @@ namespace HelperForNotEditor
 
                 var returnTrueIndex = richTextBox1.Text.LastIndexOf("end;");
                 RichTextColor("end;\n", Color.Green, returnTrueIndex);
+
                 richTextBox1.SelectionStart = richTextBox1.Text.Length;
                 richTextBox1.ScrollToCaret();
 
@@ -320,16 +355,24 @@ namespace HelperForNotEditor
                 var lines = funcText.Split("\n");
                 //Вырезаем название события, например: "use_compas1"
                 var value = lines[0].Substring(lines[0].IndexOf("use_"), lines[0].IndexOf("(") - lines[0].IndexOf("use_")).Trim();
-                var callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler(");
+                var callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler( \"" + value + "_inv" +"\"");
+                if (callEventHandlerIndex == -1)
+                    callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler(\"" + value + "_inv" + "\"");
+                if (callEventHandlerIndex == -1)
+                    callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler(  \"" + value + "_inv" + "\"");
+
                 var resultTextFunc = funcText.Insert(callEventHandlerIndex, "if port_common.CheckEnergy(\"" + value + "\") then\n");
                 var checkEnergyIndex = resultTextFunc.IndexOf("if port_common.CheckEnergy(\"" + value + "\") then\n");
                 var returnTrueIndex = resultTextFunc.IndexOf("return true;", checkEnergyIndex);
+                if (returnTrueIndex == -1)
+                {
+                    returnTrueIndex = resultTextFunc.LastIndexOf("AnimPlay(");
+                    returnTrueIndex = resultTextFunc.IndexOf("\n", returnTrueIndex) + 1;
+                }
                 var subsringFunc = resultTextFunc.Substring(checkEnergyIndex, returnTrueIndex - checkEnergyIndex);
                 var linesForRichTextBoxColor = new List<string>();
 
-                var strForTest = "if port_common.CheckEnergy(\"use_springext\") then\ncmn.CallEventHandler( \"use_springext_beg\" );\r\n  \r\n      local func_end = function ()\r\n    private.get_braceletext();\r\n     private.get_gaswrenchext();\r\n     cmn.Lock( false );\r\n        cmn.SetEventDone( \"use_springext\" );\r\n        cmn.CallEventHandler( \"use_springext_end\" );\r\n      end;\r\n  \r\n      cmn.Lock( true );\r\n      common_impl.PlayAudio( \"sfx\", private.inv_current_level..\"/sfx/aud_use_springext_disassembledmechanismext\" );\r\n      ObjMultiSet({\r\n        { \"anm_inv_disassembledmechanismext_spring\",    { alp = 1 } },\r\n        { \"anm_inv_disassembledmechanismext_spring_hh\", { alp = 0 } }\r\n      });\r\n      AnimPlay( \"anm_inv_disassembledmechanismext_spring\", \"spring\", func_end );\r\n  \r\n      ";
-
-                if (subsringFunc.IndexOf("private.get_") != 0)
+                if (subsringFunc.IndexOf("private.get_") < 0)
                 {
                     foreach (var findPrivateGetLine in subsringFunc.Split("\n"))
                     {
@@ -349,18 +392,29 @@ namespace HelperForNotEditor
 
                 checkEnergyIndex = resultTextFunc.IndexOf("if port_common.CheckEnergy(\"" + value + "\") then\n");
                 returnTrueIndex = resultTextFunc.IndexOf("return true;", checkEnergyIndex);
+                if (returnTrueIndex == -1)
+                {
+                    returnTrueIndex = resultTextFunc.LastIndexOf("AnimPlay(");
+                    returnTrueIndex = resultTextFunc.IndexOf("\n", returnTrueIndex) + 1;
+                }
                 resultTextFunc = resultTextFunc.Insert(returnTrueIndex, "end;\n");
                 richTextBox1.Text = richTextBox1.Text + resultTextFunc;
 
 
                 checkEnergyIndex = richTextBox1.Text.IndexOf("if port_common.CheckEnergy(\"" + value + "\") then\n");
                 RichTextColor("if port_common.CheckEnergy(\"" + value + "\") then\n", Color.Green, checkEnergyIndex);
+                int n = 5;
                 returnTrueIndex = richTextBox1.Text.IndexOf("return true;", checkEnergyIndex);
+                if (returnTrueIndex == -1)
+                {
+                    returnTrueIndex = richTextBox1.Text.LastIndexOf("AnimPlay(");
+                    returnTrueIndex = richTextBox1.Text.IndexOf("\n", returnTrueIndex) + 1;
+                }
                 foreach (var line in linesForRichTextBoxColor)
                 {
                     RichTextColor(line, Color.Green, richTextBox1.Text.IndexOf(line, checkEnergyIndex));
                 }
-                RichTextColor("end;\n", Color.Green, returnTrueIndex - 5);
+                RichTextColor("end;\n", Color.Green, returnTrueIndex);
                 richTextBox1.SelectionStart = richTextBox1.Text.Length;
                 richTextBox1.ScrollToCaret();
 
@@ -400,6 +454,10 @@ namespace HelperForNotEditor
                 var value = lines[0].Substring(lines[0].IndexOf("clk_"), lines[0].IndexOf("(") - lines[0].IndexOf("clk_")).Trim();
                 var resultTextFunc = funcText.Replace(lines[0], lines[0] + "\n  if port_common.CheckEnergy(\"" + value + "\") then\n");
                 var lastEndIndex = resultTextFunc.LastIndexOf("end;");
+                if (lastEndIndex == -1)
+                {
+                    lastEndIndex = resultTextFunc.LastIndexOf("end");
+                }
                 resultTextFunc = resultTextFunc.Insert(lastEndIndex, "end;\n");
                 richTextBox1.Text = richTextBox1.Text + resultTextFunc;
 
