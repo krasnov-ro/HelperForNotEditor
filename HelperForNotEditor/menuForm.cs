@@ -17,7 +17,8 @@ namespace HelperForNotEditor
             "Произвести замену числового кода на словарный код в LogEvents",    ///1
             "Закомментирование всех строк вызова interface.ObjDoNotDrop",       ///2
             "Проставление в assets вызов функции CheckEnergy()",                ///3
-            "Перенос f2p файлов в assets (копируем)"                            ///4
+            "Перенос f2p файлов в assets (копируем)",                           ///4
+            "Замена указанных строк в файлах"                                   ///5
         };
 
         public menuForm()
@@ -31,6 +32,11 @@ namespace HelperForNotEditor
 
         private void goWork_Click(object sender, EventArgs e)
         {
+            if(comboBox1.SelectedItem == null)
+            {
+                MessageBox.Show("Выберите функцию!");
+                return;
+            }
             if (comboBox1.SelectedItem.ToString() == comboItems[0])
             {
                 Form1 a = new Form1();
@@ -65,6 +71,13 @@ namespace HelperForNotEditor
             else if(comboBox1.SelectedItem.ToString() == comboItems[4])
             {
                 f2pFilesForm a = new f2pFilesForm();
+                this.Hide();
+                a.ShowDialog();
+                this.Show();
+            }
+            else if(comboBox1.SelectedItem.ToString() == comboItems[5])
+            {
+                ReplacerForm a = new ReplacerForm();
                 this.Hide();
                 a.ShowDialog();
                 this.Show();

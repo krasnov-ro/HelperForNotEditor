@@ -220,10 +220,11 @@ namespace HelperForNotEditor
                 {
                     cuurentLineIndex = inputText.IndexOf(line, cuurentLineIndex);
                     if (
-                        (line.Contains("if ") && line.Contains(" then"))
+                        (line.Contains("if ") && line.Contains(" then") && !line.Contains("elseif"))
                      || (line.Contains("for ") && line.Contains(" do"))
                      || (line.Contains("while ") && line.Contains(" do"))
-                     || (line.Contains("= function(")))
+                     || (line.Contains("= function") && line.Contains("local"))
+                     )
                     {
                         endCount++;
                         if (line.Contains(" end\n") || line.Contains(" end;") || line.Contains(" end\r") || line.Contains(" end;\r"))
@@ -360,6 +361,19 @@ namespace HelperForNotEditor
                     callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler(\"" + value + "_inv" + "\"");
                 if (callEventHandlerIndex == -1)
                     callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler(  \"" + value + "_inv" + "\"");
+                if (callEventHandlerIndex == -1)
+                {
+                    var localitem = funcText.IndexOf("local item = \"inv_");
+                    var forvalue = funcText.IndexOf("\r", localitem);
+                    value = funcText.Substring(localitem + 18, forvalue - (localitem + 18)).Replace("\"","").Replace(";","");
+                    callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler( \"use_" + value + "_inv" + "\"");
+                    if (callEventHandlerIndex == -1)
+                        callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler(\"use_" + value + "_inv" + "\"");
+                    if (callEventHandlerIndex == -1)
+                        callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler(  \"use_" + value + "_inv" + "\"");
+                    if (callEventHandlerIndex == -1)
+                        callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler(");
+                }
 
                 var resultTextFunc = funcText.Insert(callEventHandlerIndex, "if port_common.CheckEnergy(\"" + value + "\") then\n");
                 var checkEnergyIndex = resultTextFunc.IndexOf("if port_common.CheckEnergy(\"" + value + "\") then\n");
@@ -367,7 +381,9 @@ namespace HelperForNotEditor
                 if (returnTrueIndex == -1)
                 {
                     returnTrueIndex = resultTextFunc.LastIndexOf("AnimPlay(");
-                    returnTrueIndex = resultTextFunc.IndexOf("\n", returnTrueIndex) + 1;
+                    if(returnTrueIndex == -1)
+                        returnTrueIndex = resultTextFunc.LastIndexOf("end;");
+                    returnTrueIndex = resultTextFunc.IndexOf("\r", returnTrueIndex) + 1;
                 }
                 var subsringFunc = resultTextFunc.Substring(checkEnergyIndex, returnTrueIndex - checkEnergyIndex);
                 var linesForRichTextBoxColor = new List<string>();
@@ -394,8 +410,9 @@ namespace HelperForNotEditor
                 returnTrueIndex = resultTextFunc.IndexOf("return true;", checkEnergyIndex);
                 if (returnTrueIndex == -1)
                 {
-                    returnTrueIndex = resultTextFunc.LastIndexOf("AnimPlay(");
-                    returnTrueIndex = resultTextFunc.IndexOf("\n", returnTrueIndex) + 1;
+                    returnTrueIndex = resultTextFunc.LastIndexOf("AnimPlay("); if (returnTrueIndex == -1)
+                        returnTrueIndex = resultTextFunc.LastIndexOf("end;");
+                    returnTrueIndex = resultTextFunc.IndexOf("\r", returnTrueIndex) + 1;
                 }
                 resultTextFunc = resultTextFunc.Insert(returnTrueIndex, "end;\n");
                 richTextBox1.Text = richTextBox1.Text + resultTextFunc;
