@@ -254,7 +254,7 @@ namespace HelperForNotEditor
                     {
                         if (!value.Contains(code + "collect"))
                         {
-                            getFunctions.Add(inputTextFunction1); // Добавляем функцию в скисок функций этого файла
+                            getFunctions.Add(inputTextFunction1); // Добавляем функцию в список функций этого файла
                             if (print == true)
                                 richTextBox1.Text = richTextBox1.Text + value + ";  ";
                         }
@@ -306,6 +306,7 @@ namespace HelperForNotEditor
                     resultTextFunc = funcText.Replace(lines[0], lines[0] + "\n  if port_common.CheckEnergy(\"" + value + "\") then\n");
                     var lastEndIndex = resultTextFunc.LastIndexOf("end");
                     resultTextFunc = resultTextFunc.Insert(lastEndIndex, "end;\n");
+                    resultTextFunc = TabulationFunc(resultTextFunc);
                     richTextBox1.Text = richTextBox1.Text + resultTextFunc;
                     var checkEnergyIndex = richTextBox1.Text.IndexOf("if port_common.CheckEnergy(\"" + value + "\") then\n");
                     RichTextColor("if port_common.CheckEnergy(\"" + value + "\") then\n", Color.Green, checkEnergyIndex);
@@ -364,6 +365,12 @@ namespace HelperForNotEditor
                 if (callEventHandlerIndex == -1)
                 {
                     var localitem = funcText.IndexOf("local item = \"inv_");
+                    if(localitem == -1)
+                    {
+                        richTextBox1.Text = richTextBox1.Text + "\n Не подходящее событие, переходим к следующему событию! \n";
+                        counterUse++;
+                        return;
+                    }
                     var forvalue = funcText.IndexOf("\r", localitem);
                     value = funcText.Substring(localitem + 18, forvalue - (localitem + 18)).Replace("\"","").Replace(";","");
                     callEventHandlerIndex = funcText.IndexOf("cmn.CallEventHandler( \"use_" + value + "_inv" + "\"");
@@ -415,6 +422,7 @@ namespace HelperForNotEditor
                     returnTrueIndex = resultTextFunc.IndexOf("\r", returnTrueIndex) + 1;
                 }
                 resultTextFunc = resultTextFunc.Insert(returnTrueIndex, "end;\n");
+                resultTextFunc = TabulationFunc(resultTextFunc);
                 richTextBox1.Text = richTextBox1.Text + resultTextFunc;
 
 
@@ -476,6 +484,7 @@ namespace HelperForNotEditor
                     lastEndIndex = resultTextFunc.LastIndexOf("end");
                 }
                 resultTextFunc = resultTextFunc.Insert(lastEndIndex, "end;\n");
+                resultTextFunc = TabulationFunc(resultTextFunc);
                 richTextBox1.Text = richTextBox1.Text + resultTextFunc;
 
                 var checkEnergyIndex = richTextBox1.Text.IndexOf("if port_common.CheckEnergy(\"" + value + "\") then\n");
@@ -621,6 +630,80 @@ namespace HelperForNotEditor
                 richTextBox1.SelectionLength = text.Length;
                 richTextBox1.SelectionColor = color;
             }
+        }
+        public string TabulationFunc(string text)
+        {
+            string resultText = string.Empty;
+            int tabulationLvl = 0;
+            var linesSplitText = text.Split("\n");
+            foreach(var line in linesSplitText)
+            {
+                if (line.Contains("function private."))
+                {
+                    if (!(line.Substring(0, 2) == "--"))
+                    {
+                        resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                        tabulationLvl++;
+                    }
+                }
+                else if (line.Contains("function public."))
+                {
+                    if (!(line.Substring(0, 2) == "--"))
+                    {
+                        resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                        tabulationLvl++;
+                    }
+                }
+
+                else if(
+                    (line.Contains("if ") && line.Contains(" then") && !line.Contains("elseif"))
+                    || (line.Contains("for ") && line.Contains(" do"))
+                    || (line.Contains("while ") && line.Contains(" do"))
+                    || (line.Contains("= function") && line.Contains("local"))
+                    || (line.Contains("function() public"))
+                    )
+                {
+                    resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                    tabulationLvl++;
+                    if (line.Contains("function() public") && line.Contains(" end,"))
+                    {
+                        tabulationLvl--;
+                    }
+                    if (line.Contains(" end\n") || line.Contains(" end;") || line.Contains(" end\r") || line.Contains(" end;\r"))
+                    {
+                        tabulationLvl--;
+                        resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                    }
+                    if (line.Contains("\rend;"))
+                    {
+                        tabulationLvl--;
+                        resultText = resultText.Replace("\rend;", "");
+                        resultText = resultText + "\n" + IfTabLvl(tabulationLvl) + "end;" + "\n";
+                    }
+                }
+
+                else if (line.Trim() == "end;" || line.Trim() == "end" || line.Trim() == "end\r" || line.Trim() == "end;\r")
+                {
+                    if (tabulationLvl > 0)
+                    {
+                        tabulationLvl--;
+                        resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                    }
+                }
+
+                else
+                {
+                    resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                }
+                
+            }
+
+            return resultText;
+        }
+
+        public string IfTabLvl(int tabulationLvl)
+        {
+            return new string(' ', tabulationLvl * 2);
         }
     }
 }

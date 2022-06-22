@@ -14,7 +14,7 @@ namespace HelperForNotEditor
         // при изменении позиций в массиве, придется скорректировать номер в функции goWork_Click()
         string[] comboItems = {
             "",                    ///0
-            "Портирование интерфейса меню",    ///1
+            "",    ///1
             "Закомментирование всех строк вызова interface.ObjDoNotDrop",       ///2
             "Реализация проверки энергии игрока",                ///3
             "Подключение библиотек портирования к текущему проекту",                           ///4
@@ -47,9 +47,9 @@ namespace HelperForNotEditor
             }
             else if(comboBox1.SelectedItem.ToString() == comboItems[1])
             {
-                LogEvents_changer a = new LogEvents_changer();
+                GameMenuPortForm a = new GameMenuPortForm();
                 this.Hide();
-                a.ChangeForm("LogEvents");
+                a.sendFolder(folder);
                 a.ShowDialog();
                 this.Show();
             }
