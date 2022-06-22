@@ -13,9 +13,18 @@ namespace HelperForNotEditor
     public partial class LogEvents_changer : Form
     {
         List<string> filesArrGlobal = new List<string>();
+        private string folderName = string.Empty;
         public LogEvents_changer()
         {
             InitializeComponent();
+        }
+
+        public void sendFolder (string folderStr)
+        {
+            if( folderStr != string.Empty)
+            {
+                folderName = folderStr;
+            }
         }
 
         public void ChangeForm(string type)
@@ -40,25 +49,9 @@ namespace HelperForNotEditor
             }
         }
 
-        private string folderName;
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            // показать диалог выбора папки
-            DialogResult result = folderBrowserDialog1.ShowDialog();
-
-            // если папка выбрана и нажата клавиша `OK` - значит можно получить путь к папке
-            if (result == DialogResult.OK)
-            {
-                // запишем в нашу переменную путь к папке
-                folderName = folderBrowserDialog1.SelectedPath;
-                richTextBox1.Text = richTextBox1.Text + "Выбрана папка: " + folderName + "\n";
-            }
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
-            if (folderName == null)
+            if (folderName == null || folderName == string.Empty)
             {
                 richTextBox1.Text = richTextBox1.Text + "error не указана папка assets\n";
 
@@ -357,6 +350,7 @@ namespace HelperForNotEditor
             return inputText;
         }
 
+        // Метод комментирования вызова функции ObjDoNotDrop
         public string ReplaceObjDoNotDrop(string inputText, string file)
         {
             string inputFirst = inputText;
@@ -366,28 +360,28 @@ namespace HelperForNotEditor
             inputText = inputText.Replace("interface.ObjDoNotDrop", "--interface.ObjDoNotDrop");
             if (!inputText.Equals(inputTextOld))
             {
-                richTextBox1.Text = richTextBox1.Text + "Произведена замена interface.ObjDoNotDrop в файле " + file + "\n";
+                richTextBox1.Text = richTextBox1.Text + "[" + DateTime.Now.ToString("hh:mm:ss.ff") + "] Произведена замена interface.ObjDoNotDrop в файле " + file + "\n";
             }
 
             inputTextOld = inputText;
             inputText = inputText.Replace(" ObjDoNotDrop();", "--ObjDoNotDrop();");
             if (!inputText.Equals(inputTextOld))
             {
-                richTextBox1.Text = richTextBox1.Text + "Произведена замена ObjDoNotDrop(); в файле " + file + "\n";
+                richTextBox1.Text = richTextBox1.Text + "[" + DateTime.Now.ToString("hh:mm:ss.ff") + "] Произведена замена ObjDoNotDrop(); в файле " + file + "\n";
             }
 
             inputTextOld = inputText;
             inputText = inputText.Replace(" ObjDoNotDrop()", "--ObjDoNotDrop()");
             if (!inputText.Equals(inputTextOld))
             {
-                richTextBox1.Text = richTextBox1.Text + "Произведена замена ObjDoNotDrop() в файле " + file + "\n";
+                richTextBox1.Text = richTextBox1.Text + "[" + DateTime.Now.ToString("hh:mm:ss.ff") + "] Произведена замена ObjDoNotDrop() в файле " + file + "\n";
             }
 
             inputTextOld = inputText;
             inputText = inputText.Replace(" ObjDoNotDrop(", "--ObjDoNotDrop()");
             if (!inputText.Equals(inputTextOld))
             {
-                richTextBox1.Text = richTextBox1.Text + "Произведена замена ObjDoNotDrop в файле " + file + "\n";
+                richTextBox1.Text = richTextBox1.Text + "[" + DateTime.Now.ToString("hh:mm:ss.ff") + "] Произведена замена ObjDoNotDrop в файле " + file + "\n";
             }
             #endregion
 
@@ -498,7 +492,7 @@ namespace HelperForNotEditor
         }
         private void change_ObjDoNotDrop_button_Click(object sender, EventArgs e)
         {
-            if (folderName == null)
+            if (folderName == null || folderName == string.Empty)
             {
                 richTextBox1.Text = richTextBox1.Text + "error не указана папка assets\n";
 
@@ -513,15 +507,19 @@ namespace HelperForNotEditor
                 return;
             }
 
+            // Находим все файлы расширения .lua
             string[] allFoundFiles = Directory.GetFiles(folderName, "*.lua", SearchOption.AllDirectories);
+            // Проходимся по найденным файлам
             foreach (string file in allFoundFiles)
             {
                 string tmp = File.ReadAllText(file);
+                // Проверяем на наличие упоминания функции ObjDoNotDrop
                 if (tmp.IndexOf("ObjDoNotDrop", StringComparison.CurrentCulture) != -1)
                 {
                     if (!file.Contains("mod_botcontroller"))
                     {
                         File.Delete(file);
+                        // Вызываем метод для комментирования вызова ObjDoNotDrop
                         File.WriteAllText(file, ReplaceObjDoNotDrop(tmp, file));
                     }
                 }
@@ -540,7 +538,7 @@ namespace HelperForNotEditor
         {
             List<string> filesArr = new List<string>();
 
-            if (folderName == null)
+            if (folderName == null || folderName == string.Empty)
             {
                 richTextBox1.Text = richTextBox1.Text + "error не указана папка assets\n";
 

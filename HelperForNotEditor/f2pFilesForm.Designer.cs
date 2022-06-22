@@ -32,7 +32,6 @@ namespace HelperForNotEditor
             this.sourceButton = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.targetButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog2 = new System.Windows.Forms.FolderBrowserDialog();
             this.goButton = new System.Windows.Forms.Button();
             this.filesListButton = new System.Windows.Forms.Button();
@@ -57,17 +56,6 @@ namespace HelperForNotEditor
             this.richTextBox1.Size = new System.Drawing.Size(449, 424);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
-            // 
-            // targetButton
-            // 
-            this.targetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.targetButton.Location = new System.Drawing.Point(13, 59);
-            this.targetButton.Name = "targetButton";
-            this.targetButton.Size = new System.Drawing.Size(116, 38);
-            this.targetButton.TabIndex = 2;
-            this.targetButton.Text = "Куда";
-            this.targetButton.UseVisualStyleBackColor = true;
-            this.targetButton.Click += new System.EventHandler(this.targetButton_Click);
             // 
             // goButton
             // 
@@ -102,7 +90,6 @@ namespace HelperForNotEditor
             this.ClientSize = new System.Drawing.Size(596, 450);
             this.Controls.Add(this.filesListButton);
             this.Controls.Add(this.goButton);
-            this.Controls.Add(this.targetButton);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.sourceButton);
             this.Name = "f2pFilesForm";
@@ -116,7 +103,6 @@ namespace HelperForNotEditor
         private System.Windows.Forms.Button sourceButton;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.Button targetButton;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog2;
         private System.Windows.Forms.Button goButton;
         private System.Windows.Forms.Button filesListButton;

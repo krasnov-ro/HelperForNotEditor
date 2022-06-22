@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace HelperForNotEditor
@@ -23,6 +24,14 @@ namespace HelperForNotEditor
             goButton.Visible = false;
         }
 
+        public void sendFolder(string folderStr)
+        {
+            if (folderStr != string.Empty)
+            {
+                targetFolderName = folderStr;
+            }
+        }
+
         private void sourceButton_Click(object sender, EventArgs e)
         {
             // показать диалог выбора папки
@@ -34,21 +43,6 @@ namespace HelperForNotEditor
                 // запишем в нашу переменную путь к папке
                 sourceFolderName = folderBrowserDialog1.SelectedPath;
                 richTextBox1.Text = richTextBox1.Text + "Выбрана папка откуда копируем f2p файлы: " + sourceFolderName + "\n";
-            }
-            checkReady();
-        }
-
-        private void targetButton_Click(object sender, EventArgs e)
-        {
-            // показать диалог выбора папки
-            DialogResult result = folderBrowserDialog2.ShowDialog();
-
-            // если папка выбрана и нажата клавиша `OK` - значит можно получить путь к папке
-            if (result == DialogResult.OK)
-            {
-                // запишем в нашу переменную путь к папке
-                targetFolderName = folderBrowserDialog2.SelectedPath;
-                richTextBox1.Text = richTextBox1.Text + "Выбрана папка куда копируем f2p файлы: " + targetFolderName + "\n";
             }
             checkReady();
         }
@@ -128,6 +122,34 @@ namespace HelperForNotEditor
             if(sourceFolderName != null && targetFolderName != null && filesArray != null)
             {
                 goButton.Visible = true;
+            }
+            else if (targetFolderName == null || targetFolderName == string.Empty)
+            {
+                richTextBox1.Text = richTextBox1.Text + "error не указано место назначения для библиотек\n";
+
+                string regExpr = @"error";
+                foreach (Match m in Regex.Matches(richTextBox1.Text, regExpr))
+                {
+                    richTextBox1.SelectionStart = m.Index;
+                    richTextBox1.SelectionLength = m.Length;
+                    richTextBox1.SelectionColor = Color.Red;
+                }
+
+                return;
+            }
+            else if (filesArray == null)
+            {
+                richTextBox1.Text = richTextBox1.Text + "error не указан список библиотек\n";
+
+                string regExpr = @"error";
+                foreach (Match m in Regex.Matches(richTextBox1.Text, regExpr))
+                {
+                    richTextBox1.SelectionStart = m.Index;
+                    richTextBox1.SelectionLength = m.Length;
+                    richTextBox1.SelectionColor = Color.Red;
+                }
+
+                return;
             }
         }
     }

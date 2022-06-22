@@ -13,13 +13,14 @@ namespace HelperForNotEditor
         // !!!       !!!       !!!             !!!
         // при изменении позиций в массиве, придется скорректировать номер в функции goWork_Click()
         string[] comboItems = {
-            "Исключение ненужных строк",                                        ///0
-            "Произвести замену числового кода на словарный код в LogEvents",    ///1
+            "",                    ///0
+            "Портирование интерфейса меню",    ///1
             "Закомментирование всех строк вызова interface.ObjDoNotDrop",       ///2
-            "Проставление в assets вызов функции CheckEnergy()",                ///3
-            "Перенос f2p файлов в assets (копируем)",                           ///4
-            "Замена указанных строк в файлах"                                   ///5
+            "Реализация проверки энергии игрока",                ///3
+            "Подключение библиотек портирования к текущему проекту",                           ///4
+            "Замена указанных строк в файлах игры"                                   ///5
         };
+        string folder = string.Empty;
 
         public menuForm()
         {
@@ -57,6 +58,8 @@ namespace HelperForNotEditor
                 LogEvents_changer a = new LogEvents_changer();
                 this.Hide();
                 a.ChangeForm("ObjDoNotDrop");
+                a.sendFolder(folder);
+                a.Text = comboBox1.SelectedItem.ToString();
                 a.ShowDialog();
                 this.Show();
             }
@@ -65,6 +68,8 @@ namespace HelperForNotEditor
                 LogEvents_changer a = new LogEvents_changer();
                 this.Hide();
                 a.ChangeForm("CheckEnergy");
+                a.sendFolder(folder);
+                a.Text = comboBox1.SelectedItem.ToString();
                 a.ShowDialog();
                 this.Show();
             }
@@ -72,6 +77,8 @@ namespace HelperForNotEditor
             {
                 f2pFilesForm a = new f2pFilesForm();
                 this.Hide();
+                a.sendFolder(folder);
+                a.Text = comboBox1.SelectedItem.ToString();
                 a.ShowDialog();
                 this.Show();
             }
@@ -79,8 +86,24 @@ namespace HelperForNotEditor
             {
                 ReplacerForm a = new ReplacerForm();
                 this.Hide();
+                a.sendFolder(folder);
+                a.Text = comboBox1.SelectedItem.ToString();
                 a.ShowDialog();
                 this.Show();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // показать диалог выбора папки
+            DialogResult result = folderBrowserDialog1.ShowDialog();
+
+            // если папка выбрана и нажата клавиша `OK` - значит можно получить путь к папке
+            if (result == DialogResult.OK)
+            {
+                // запишем в нашу переменную путь к папке
+                folder = folderBrowserDialog1.SelectedPath;
+                textBox1.Text = folderBrowserDialog1.SelectedPath.ToString();
             }
         }
     }

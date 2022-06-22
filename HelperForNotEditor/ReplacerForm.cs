@@ -17,24 +17,17 @@ namespace HelperForNotEditor
         {
             InitializeComponent();
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        public void sendFolder(string folderStr)
         {
-            // показать диалог выбора папки
-            DialogResult result = folderBrowserDialog1.ShowDialog();
-
-            // если папка выбрана и нажата клавиша `OK` - значит можно получить путь к папке
-            if (result == DialogResult.OK)
+            if (folderStr != string.Empty)
             {
-                // запишем в нашу переменную путь к папке
-                folderName = folderBrowserDialog1.SelectedPath;
-                richTextBox2.Text = richTextBox2.Text + "Выбрана папка: " + folderName + "\n";
+                folderName = folderStr;
             }
         }
 
         private void replaceButton_Click(object sender, EventArgs e)
         {
-            if (folderName == null)
+            if (folderName == null || folderName == string.Empty)
             {
                 richTextBox2.Text = richTextBox2.Text + "[error] не указана папка assets\n";
 

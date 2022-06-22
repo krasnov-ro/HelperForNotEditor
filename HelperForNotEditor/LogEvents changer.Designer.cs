@@ -29,7 +29,6 @@ namespace HelperForNotEditor
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
@@ -37,17 +36,6 @@ namespace HelperForNotEditor
             this.CheckEnergyButton = new System.Windows.Forms.Button();
             this.goFilesButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(13, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(153, 33);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Folder";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // richTextBox1
             // 
@@ -114,7 +102,6 @@ namespace HelperForNotEditor
             this.Controls.Add(this.change_ObjDoNotDrop_button);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.button1);
             this.Name = "LogEvents_changer";
             this.Text = "Replacer";
             this.ResumeLayout(false);

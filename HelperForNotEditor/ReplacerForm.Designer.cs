@@ -30,7 +30,6 @@ namespace HelperForNotEditor
         private void InitializeComponent()
         {
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.replaceButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
@@ -47,17 +46,6 @@ namespace HelperForNotEditor
             this.richTextBox1.Size = new System.Drawing.Size(656, 76);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
-            // 
-            // button1
-            // 
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(12, 47);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(113, 35);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Указать папку";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // replaceButton
             // 
@@ -122,7 +110,6 @@ namespace HelperForNotEditor
             this.Controls.Add(this.label1);
             this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.replaceButton);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -136,7 +123,6 @@ namespace HelperForNotEditor
         #endregion
 
         private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button replaceButton;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.RichTextBox richTextBox2;
