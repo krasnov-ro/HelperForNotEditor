@@ -78,7 +78,7 @@ namespace HelperForNotEditor
                 if (tmp.IndexOf(richTextBox1.Text.Replace("\n","\r\n").Trim(), StringComparison.CurrentCulture) != -1)
                 {
                     File.Delete(file);
-                   // File.WriteAllText(file, ReplaceLogEvents(tmp, file));
+                    File.WriteAllText(file, ReplaceLogEvents(tmp, file));
                 }
             }
             richTextBox2.Text = richTextBox2.Text + "Замена успешно завершена!\n";
@@ -91,28 +91,28 @@ namespace HelperForNotEditor
             }
         }
 
-        //public string ReplaceLogEvents(string inputText, string file)
-        //{
-        //    string inputFirst = inputText;
-        //    string inputTextOld = inputText;
+        public string ReplaceLogEvents(string inputText, string file)
+        {
+            string inputFirst = inputText;
+            string inputTextOld = inputText;
 
-        //    if(inputText)
-        //    inputText = inputText.Replace(richTextBox1.Text, richTextBox3.Text);
-        //    richTextBox2.Text = richTextBox2.Text + "Произведена замена "+ richTextBox1.Text +" в файле " + file + "\n " +
-        //        " на следующее\n " + richTextBox3.Text;
+            if (inputText != null)
+                inputText = inputText.Replace(richTextBox1.Text, richTextBox3.Text);
+            richTextBox2.Text = richTextBox2.Text + "Произведена замена " + richTextBox1.Text + " в файле " + file + "\n " +
+                " на следующее\n " + richTextBox3.Text;
 
-        //    if (!inputFirst.Equals(inputText))
-        //    {
-        //        richTextBox2.Text = richTextBox2.Text + "--------------------------------------------------------\n";
-        //        string regExpr = @"--------------------------------------------------------\n";
-        //        foreach (Match m in Regex.Matches(richTextBox2.Text, regExpr))
-        //        {
-        //            richTextBox2.SelectionStart = m.Index;
-        //            richTextBox2.SelectionLength = m.Length;
-        //            richTextBox2.SelectionColor = Color.Green;
-        //        }
-        //    }
-        //    return inputText;
-        //}
+            if (!inputFirst.Equals(inputText))
+            {
+                richTextBox2.Text = richTextBox2.Text + "--------------------------------------------------------\n";
+                string regExpr = @"--------------------------------------------------------\n";
+                foreach (Match m in Regex.Matches(richTextBox2.Text, regExpr))
+                {
+                    richTextBox2.SelectionStart = m.Index;
+                    richTextBox2.SelectionLength = m.Length;
+                    richTextBox2.SelectionColor = Color.Green;
+                }
+            }
+            return inputText;
+        }
     }
 }

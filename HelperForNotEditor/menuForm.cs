@@ -13,12 +13,14 @@ namespace HelperForNotEditor
         // !!!       !!!       !!!             !!!
         // при изменении позиций в массиве, придется скорректировать номер в функции goWork_Click()
         string[] comboItems = {
-            "",                    ///0
-            "",    ///1
-            "Закомментирование всех строк вызова interface.ObjDoNotDrop",       ///2
-            "Реализация проверки энергии игрока",                ///3
-            "Подключение библиотек портирования к текущему проекту",                           ///4
-            "Замена указанных строк в файлах игры"                                   ///5
+            "Для реализации событий в SetEventDone, выборка событий use, opn, win",  ///0
+            "Портирование меню (не готово)",                                         ///1
+            "Закомментирование всех строк вызова interface.ObjDoNotDrop",            ///2
+            "Реализация проверки энергии игрока",                                    ///3
+            "Подключение библиотек портирования к текущему проекту",                 ///4
+            "Замена указанных строк в файлах игры",                                  ///5
+            "Конвертация .ogg в .mp4",                                               ///6
+            "Пройтись по gates и выставить LightOn or LightOff"                      ///7
         };
         string folder = string.Empty;
 
@@ -89,6 +91,24 @@ namespace HelperForNotEditor
                 a.sendFolder(folder);
                 a.Text = comboBox1.SelectedItem.ToString();
                 a.ShowDialog();
+                this.Show();
+            }
+            else if (comboBox1.SelectedItem.ToString() == comboItems[6])
+            {
+                Ogg2MP4_converter a = new Ogg2MP4_converter();
+                this.Hide();
+                a.sendFolder(folder);
+                a.ShowDialog();
+                this.Show();
+            }
+            else if (comboBox1.SelectedItem.ToString() == comboItems[7])
+            {
+                GameMenuPortForm gatesPort = new GameMenuPortForm();
+                this.Hide();
+                gatesPort.sendFolder(folder);
+                gatesPort.ChangeForm("GatesPort");
+                gatesPort.Text = comboBox1.SelectedItem.ToString();
+                gatesPort.ShowDialog();
                 this.Show();
             }
         }
