@@ -18,7 +18,8 @@ namespace HelperForNotEditor
             "Закомментирование всех строк вызова interface.ObjDoNotDrop",       ///2
             "Проставление в assets вызов функции CheckEnergy()",                ///3
             "Перенос f2p файлов в assets (копируем)",                           ///4
-            "Замена указанных строк в файлах"                                   ///5
+            "Замена указанных строк в файлах",                                  ///5
+            "Исправление табуляции строк"                                       ///6
         };
 
         public menuForm()
@@ -78,6 +79,13 @@ namespace HelperForNotEditor
             else if(comboBox1.SelectedItem.ToString() == comboItems[5])
             {
                 ReplacerForm a = new ReplacerForm();
+                this.Hide();
+                a.ShowDialog();
+                this.Show();
+            }
+            else if (comboBox1.SelectedItem.ToString() == comboItems[6])
+            {
+                TabulationFixForm a = new TabulationFixForm();
                 this.Hide();
                 a.ShowDialog();
                 this.Show();

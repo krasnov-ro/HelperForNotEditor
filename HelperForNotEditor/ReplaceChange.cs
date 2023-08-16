@@ -63,6 +63,10 @@ namespace HelperForNotEditor
             counter = 0;
         }
 
+        public ReplaceChange()
+        {
+        }
+
         private void applyChangesButton_Click(object sender, EventArgs e)
         {
             string fileOrgText = File.ReadAllText(filesArr[counter]);
@@ -920,7 +924,7 @@ namespace HelperForNotEditor
             }
         }
 
-        public string TabulationFunc(string text)
+        public string TabulationFunc(string text, char tabulationSeparator = ' ')
         {
             string resultText = string.Empty;
             int tabulationLvl = 0;
@@ -932,7 +936,7 @@ namespace HelperForNotEditor
                 {
                     if (!(line.Substring(0, 2) == "--"))
                     {
-                        resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                        resultText = resultText + IfTabLvl(tabulationLvl, tabulationSeparator) + line.Trim() + "\n";
                         tabulationLvl++;
                     }
                 }
@@ -940,21 +944,23 @@ namespace HelperForNotEditor
                 {
                     if (!(line.Substring(0, 2) == "--"))
                     {
-                        resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                        resultText = resultText + IfTabLvl(tabulationLvl, tabulationSeparator) + line.Trim() + "\n";
                         tabulationLvl++;
                     }
                 }
                 else
                 {
                     tabulationLvlLast = tabulationLvl;
+                    if (tabulationMinusPlus)
+                        tabulationLvlLast++;
                     tabulationLvl = CheckTabulationLvlChange(line, tabulationLvl);
                     if (tabulationLvlLast - tabulationLvl >= 0)
                     {
-                        resultText = resultText + IfTabLvl(tabulationLvl) + line.Trim() + "\n";
+                        resultText = resultText + IfTabLvl(tabulationLvl, tabulationSeparator) + line.Trim() + "\r\n";
                     }
                     else
                     {
-                        resultText = resultText + IfTabLvl(tabulationLvl - 1) + line.Trim() + "\n";
+                        resultText = resultText + IfTabLvl(tabulationLvl - 1, tabulationSeparator) + line.Trim() + "\r\n";
                     }
                 }
             }
@@ -988,23 +994,67 @@ namespace HelperForNotEditor
 
             return resultText;
         }
-        public string IfTabLvl(int tabulationLvl)
+        public string IfTabLvl(int tabulationLvl, char tabulationSeparator = ' ')
         {
-            return new string(' ', tabulationLvl * 2);
+            int count = 1;
+            if (tabulationSeparator == ' ')
+                count = 2;
+            return new string(tabulationSeparator, tabulationLvl * count);
         }
+        int lastElseIf = 0;
+        int lastIf = 0;
+        bool tabulationMinusPlus = false;
         public int CheckTabulationLvlChange(string line, int tabLvl)
         {
+            if (tabulationMinusPlus)
+            {
+                tabulationMinusPlus = false;
+                tabLvl++;
+            }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (Regex.Match(line, @"\bif\b").Success && (Regex.Match(line, @"\bthen\b").Success && !(Regex.Match(line, @"\belseif\b").Success))
                  || (Regex.Match(line, @"\bfor\b").Success && (Regex.Match(line, @"\bdo\b").Success))
                  || (Regex.Match(line, @"\bwhile\b").Success && (Regex.Match(line, @"\bdo\b").Success))
                  || (Regex.Match(line, @"\bthen\b").Success && !(Regex.Match(line, @"\belseif\b").Success)))
             {
+                if (Regex.Match(line, @"\bif\b").Success)
+                    lastIf++;
+
                 tabLvl++;
             }
             else if (Regex.Match(line, @"\bfunction\b\s*\(\)").Success)
             {
                 tabLvl++;
+            }
+            else if (Regex.Match(line, @"\belseif\b").Success && (Regex.Match(line, @"\bthen\b").Success))
+            {
+                if (lastIf > 0)
+                {
+                    tabLvl--;
+                    lastIf--;
+                    tabulationMinusPlus = true;
+                }
+                else
+                {
+                    tabLvl++;
+                }
+
+                lastElseIf++;
+            }
+            else if (Regex.Match(line, @"\belse\b").Success)
+            {
+                if (lastIf > 0)
+                {
+                    tabLvl--;
+                    lastIf--;
+                    tabulationMinusPlus = true;
+                }
+                else if (lastElseIf > 0)
+                {
+                    tabLvl--;
+                    lastElseIf--;
+                    tabulationMinusPlus = true;
+                }
             }
 
             if (Regex.Match(line, @"\bend;\b").Success || Regex.Match(line, @"\bend,\b").Success || Regex.Match(line, @"\bend\b").Success)
