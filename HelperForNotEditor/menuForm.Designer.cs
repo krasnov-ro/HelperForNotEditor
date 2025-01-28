@@ -1,7 +1,7 @@
 ﻿
 namespace HelperForNotEditor
 {
-    partial class menuForm
+    partial class MenuForm
     {
         /// <summary>
         /// Required designer variable.
@@ -43,7 +43,7 @@ namespace HelperForNotEditor
             this.goWork.TabIndex = 0;
             this.goWork.Text = "Приступить";
             this.goWork.UseVisualStyleBackColor = true;
-            this.goWork.Click += new System.EventHandler(this.goWork_Click);
+            this.goWork.Click += new System.EventHandler(this.GoWork_Click);
             // 
             // comboBox1
             // 

@@ -13,9 +13,10 @@ namespace HelperForNotEditor
     public partial class LogEvents_changer : Form
     {
         List<string> filesArrGlobal = new List<string>();
-        public LogEvents_changer()
+        public LogEvents_changer(string type)
         {
             InitializeComponent();
+            ChangeForm(type);
         }
 
         public void ChangeForm(string type)

@@ -3,93 +3,97 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
 namespace HelperForNotEditor
 {
-    public partial class menuForm : Form
+    public partial class MenuForm : Form
     {
-        // !!!       !!!       !!!             !!!
-        // при изменении позиций в массиве, придется скорректировать номер в функции goWork_Click()
-        string[] comboItems = {
-            "Исключение ненужных строк",                                        ///0
-            "Произвести замену числового кода на словарный код в LogEvents",    ///1
-            "Закомментирование всех строк вызова interface.ObjDoNotDrop",       ///2
-            "Проставление в assets вызов функции CheckEnergy()",                ///3
-            "Перенос f2p файлов в assets (копируем)",                           ///4
-            "Замена указанных строк в файлах",                                  ///5
-            "Исправление табуляции строк"                                       ///6
+        private enum Operation
+        {
+            RemoveUnnecessaryLines,
+            ReplaceNumericCodeWithDictionaryCode,
+            CommentInterfaceObjDoNotDropCalls,
+            AddCheckEnergyCallInAssets,
+            CopyF2pFilesToAssets,
+            ReplaceSpecifiedLinesInFiles,
+            FixTabulation
+        }
+
+        private readonly Dictionary<Operation, (string Name, Func<Form> FormCreater)> _operationFormMap
+                   = new Dictionary<Operation, (string, Func<Form>)>()
+        {
+            {
+                Operation.RemoveUnnecessaryLines,
+                ("Удаление ненужных строк", () => new Form1())
+            },
+            {
+                Operation.ReplaceNumericCodeWithDictionaryCode,
+                ("Произвести замену числового кода на словарный код в LogEvents", () => new LogEvents_changer("LogEvents"))
+            },
+            {
+                Operation.CommentInterfaceObjDoNotDropCalls,
+                ("Закомментирование всех строк вызова interface.ObjDoNotDrop", () => new LogEvents_changer("ObjDoNotDrop"))
+            },
+            {
+                Operation.AddCheckEnergyCallInAssets,
+                ("Проставление в assets вызов функции CheckEnergy()", () => new LogEvents_changer("CheckEnergy"))
+            },
+            {
+                Operation.CopyF2pFilesToAssets,
+                ("Перенос f2p файлов в assets (копируем)", () => new f2pFilesForm())
+            },
+            {
+                Operation.ReplaceSpecifiedLinesInFiles,
+                ("Замена указанных строк в файлах", () => new ReplacerForm())
+            },
+            {
+                Operation.FixTabulation,
+                ("Исправление табуляции строк", () => new TabulationFixForm())
+            }
         };
 
-        public menuForm()
+        public MenuForm()
         {
             InitializeComponent();
-            for(int i = 0; i < comboItems.Length; i++)
+            InitializeComboBox();
+        }
+
+        private void InitializeComboBox()
+        {
+            foreach (var operation in _operationFormMap)
             {
-                comboBox1.Items.Add(comboItems[i]);
+                comboBox1.Items.Add(operation.Value.Name);
             }
         }
 
-        private void goWork_Click(object sender, EventArgs e)
+        private void GoWork_Click(object sender, EventArgs e)
         {
-            if(comboBox1.SelectedItem == null)
+            if (comboBox1.SelectedItem == null)
             {
                 MessageBox.Show("Выберите функцию!");
                 return;
             }
-            if (comboBox1.SelectedItem.ToString() == comboItems[0])
+
+            var selectedOperationName = comboBox1.SelectedItem.ToString();
+            var selectedOperation = _operationFormMap.FirstOrDefault(p => p.Value.Name == selectedOperationName).Key;
+            if (_operationFormMap.TryGetValue(selectedOperation, out var formFactory))
             {
-                Form1 a = new Form1();
-                this.Hide();
-                a.ShowDialog();
-                this.Show();
+                ShowForm(formFactory.FormCreater());
             }
-            else if(comboBox1.SelectedItem.ToString() == comboItems[1])
+            else
             {
-                LogEvents_changer a = new LogEvents_changer();
-                this.Hide();
-                a.ChangeForm("LogEvents");
-                a.ShowDialog();
-                this.Show();
+                MessageBox.Show("Функция не реализована!");
             }
-            else if(comboBox1.SelectedItem.ToString() == comboItems[2])
-            {
-                LogEvents_changer a = new LogEvents_changer();
-                this.Hide();
-                a.ChangeForm("ObjDoNotDrop");
-                a.ShowDialog();
-                this.Show();
-            }
-            else if(comboBox1.SelectedItem.ToString() == comboItems[3])
-            {
-                LogEvents_changer a = new LogEvents_changer();
-                this.Hide();
-                a.ChangeForm("CheckEnergy");
-                a.ShowDialog();
-                this.Show();
-            }
-            else if(comboBox1.SelectedItem.ToString() == comboItems[4])
-            {
-                f2pFilesForm a = new f2pFilesForm();
-                this.Hide();
-                a.ShowDialog();
-                this.Show();
-            }
-            else if(comboBox1.SelectedItem.ToString() == comboItems[5])
-            {
-                ReplacerForm a = new ReplacerForm();
-                this.Hide();
-                a.ShowDialog();
-                this.Show();
-            }
-            else if (comboBox1.SelectedItem.ToString() == comboItems[6])
-            {
-                TabulationFixForm a = new TabulationFixForm();
-                this.Hide();
-                a.ShowDialog();
-                this.Show();
-            }
+        }
+
+        private void ShowForm(Form form)
+        {
+            this.Hide();
+            form.ShowDialog();
+            this.Show();
         }
     }
 }
