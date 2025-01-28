@@ -22,6 +22,7 @@ namespace HelperForNotEditor
             FixTabulation
         }
 
+        // Можно будет переделать через атрибуты и рефлексию, пока оставим так
         private readonly Dictionary<Operation, (string Name, Func<Form> FormCreater)> _operationFormMap
                    = new Dictionary<Operation, (string, Func<Form>)>()
         {
