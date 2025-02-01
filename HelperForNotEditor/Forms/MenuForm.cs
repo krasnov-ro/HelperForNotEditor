@@ -23,7 +23,7 @@ namespace HelperForNotEditor
         }
 
         // Можно будет переделать через атрибуты и рефлексию, пока оставим так
-        private readonly Dictionary<Operation, (string Name, Func<Form> FormCreater)> operationFormMap
+        private readonly Dictionary<Operation, (string Name, Func<Form> FormCreater)> _operationFormMap
                    = new Dictionary<Operation, (string, Func<Form>)>()
         {
             {
@@ -56,7 +56,7 @@ namespace HelperForNotEditor
             }
         };
 
-        public Dictionary<Operation, (string Name, Func<Form> FormCreater)> OperationFormMap => operationFormMap;
+        public Dictionary<Operation, (string Name, Func<Form> FormCreater)> OperationFormMap => _operationFormMap;
 
         public MenuForm()
         {
