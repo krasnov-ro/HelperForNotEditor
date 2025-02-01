@@ -11,7 +11,7 @@ namespace HelperForNotEditor
 {
     public partial class MenuForm : Form
     {
-        private enum Operation
+        public enum Operation
         {
             RemoveUnnecessaryLines,
             ReplaceNumericCodeWithDictionaryCode,
@@ -23,7 +23,7 @@ namespace HelperForNotEditor
         }
 
         // Можно будет переделать через атрибуты и рефлексию, пока оставим так
-        private readonly Dictionary<Operation, (string Name, Func<Form> FormCreater)> _operationFormMap
+        private readonly Dictionary<Operation, (string Name, Func<Form> FormCreater)> operationFormMap
                    = new Dictionary<Operation, (string, Func<Form>)>()
         {
             {
@@ -56,6 +56,8 @@ namespace HelperForNotEditor
             }
         };
 
+        public Dictionary<Operation, (string Name, Func<Form> FormCreater)> OperationFormMap => operationFormMap;
+
         public MenuForm()
         {
             InitializeComponent();
@@ -64,7 +66,7 @@ namespace HelperForNotEditor
 
         private void InitializeComboBox()
         {
-            foreach (var operation in _operationFormMap)
+            foreach (var operation in OperationFormMap)
             {
                 comboBox1.Items.Add(operation.Value.Name);
             }
@@ -79,8 +81,8 @@ namespace HelperForNotEditor
             }
 
             var selectedOperationName = comboBox1.SelectedItem.ToString();
-            var selectedOperation = _operationFormMap.FirstOrDefault(p => p.Value.Name == selectedOperationName).Key;
-            if (_operationFormMap.TryGetValue(selectedOperation, out var formFactory))
+            var selectedOperation = OperationFormMap.FirstOrDefault(p => p.Value.Name == selectedOperationName).Key;
+            if (OperationFormMap.TryGetValue(selectedOperation, out var formFactory))
             {
                 ShowForm(formFactory.FormCreater());
             }
@@ -89,6 +91,8 @@ namespace HelperForNotEditor
                 MessageBox.Show("Функция не реализована!");
             }
         }
+
+        public List<string> ComboBoxItems => comboBox1.Items.Cast<string>().ToList();
 
         private void ShowForm(Form form)
         {
