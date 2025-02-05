@@ -28,7 +28,7 @@ namespace HelperForNotEditor
         {
             {
                 Operation.RemoveUnnecessaryLines,
-                ("Удаление ненужных строк", () => new Form1())
+                ("Удаление ненужных строк", () => new RemoveUnnecessaryLinesForm())
             },
             {
                 Operation.ReplaceNumericCodeWithDictionaryCode,

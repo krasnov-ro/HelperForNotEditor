@@ -11,17 +11,17 @@ using System.Windows.Forms;
 
 namespace HelperForNotEditor
 {
-    public partial class Form1 : Form
+    public partial class RemoveUnnecessaryLinesForm : Form
     {
         public string fileContent;
         public string filePath;
 
-        public Form1()
+        public RemoveUnnecessaryLinesForm()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonLoadFile_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -44,10 +44,10 @@ namespace HelperForNotEditor
                     }
                 }
             }
-            checkBox3.Checked = true;
-            checkBox4.Checked = true;
-            checkBox5.Checked = true;
-            button3.Enabled = true;
+            checkBoxUse.Checked = true;
+            checkBoxWin.Checked = true;
+            checkBoxOpn.Checked = true;
+            buttonGoRemove.Enabled = true;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -62,9 +62,9 @@ namespace HelperForNotEditor
                 }
             }
 
-            if (textBox1.Text.Length > 0)
+            if (textBoxNewCriteria.Text.Length > 0)
             {
-                var preNamesTB = textBox1.Text.Split(";");
+                var preNamesTB = textBoxNewCriteria.Text.Split(";");
                 foreach (var preName in preNamesTB)
                 {
                     if (preName != "")
@@ -79,11 +79,11 @@ namespace HelperForNotEditor
 
             if (fileContent != null)
             {
-                richTextBox1.Text = ReformatText(fileContent, preNames);
+                richTextBoxConsole.Text = ReformatText(fileContent, preNames);
             }
             else
             {
-                richTextBox1.Text = ReformatText(richTextBox1.Text, preNames);
+                richTextBoxConsole.Text = ReformatText(richTextBoxConsole.Text, preNames);
             }
         }
 
@@ -95,7 +95,7 @@ namespace HelperForNotEditor
             {
                 if (preNames.Any(p => contentArr[i].Contains(p)) || contentArr[i].Contains("LEVEL"))
                 {
-                    if(contentArr[i].Count(p => p == '\"') > 2 && radioButton1.Checked == true)
+                    if (contentArr[i].Count(p => p == '\"') > 2 && radioButtonForNotEditor.Checked == true)
                     {
                         var splitContent = contentArr[i].Split('\"');
                         for (int j = 0; j < splitContent.Length; j++)
@@ -107,11 +107,11 @@ namespace HelperForNotEditor
                             }
                         }
                     }
-                    else if (contentArr[i].Count(p => p == ',') > 1 && radioButton1.Checked == true)
+                    else if (contentArr[i].Count(p => p == ',') > 1 && radioButtonForNotEditor.Checked == true)
                     {
                         result = result + "    , " + contentArr[i].Replace("{", "").Replace("}", "").Replace(",", "").Replace("    ", "") + "\n";
                     }
-                    else if (radioButton1.Checked == true)
+                    else if (radioButtonForNotEditor.Checked == true)
                         result = result + contentArr[i].Replace("{", "").Replace("}", "") + "\n";
                     else
                         result = result + contentArr[i] + "\n";
@@ -124,7 +124,7 @@ namespace HelperForNotEditor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            button3.Enabled = false;
+            buttonGoRemove.Enabled = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -134,12 +134,12 @@ namespace HelperForNotEditor
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            button3.Enabled = true;
+            buttonGoRemove.Enabled = true;
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-            button3.Enabled = true;
+            buttonGoRemove.Enabled = true;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
