@@ -41,8 +41,7 @@ namespace HelperForNotEditor
             richTextBoxConsole = new System.Windows.Forms.RichTextBox();
             labelOtherCriterias = new System.Windows.Forms.Label();
             textBoxNewCriteria = new System.Windows.Forms.TextBox();
-            radioButtonForNotEditor = new System.Windows.Forms.RadioButton();
-            folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            checkBoxForNotEditor = new System.Windows.Forms.CheckBox();
             SuspendLayout();
             // 
             // openFileDialog1
@@ -69,7 +68,7 @@ namespace HelperForNotEditor
             buttonGoRemove.TabIndex = 1;
             buttonGoRemove.Text = "Go";
             buttonGoRemove.UseVisualStyleBackColor = true;
-            buttonGoRemove.Click += button3_Click;
+            buttonGoRemove.Click += buttonGoRemove_Click;
             // 
             // checkBoxGet
             // 
@@ -138,7 +137,7 @@ namespace HelperForNotEditor
             richTextBoxConsole.Size = new System.Drawing.Size(621, 425);
             richTextBoxConsole.TabIndex = 4;
             richTextBoxConsole.Text = "";
-            richTextBoxConsole.TextChanged += richTextBox1_TextChanged;
+            richTextBoxConsole.TextChanged += richTextBoxConsole_TextChanged;
             // 
             // labelOtherCriterias
             // 
@@ -155,25 +154,24 @@ namespace HelperForNotEditor
             textBoxNewCriteria.Name = "textBoxNewCriteria";
             textBoxNewCriteria.Size = new System.Drawing.Size(147, 23);
             textBoxNewCriteria.TabIndex = 6;
-            textBoxNewCriteria.TextChanged += textBox1_TextChanged;
+            textBoxNewCriteria.TextChanged += textBoxNewCriteria_TextChanged;
             // 
-            // radioButtonForNotEditor
+            // checkBoxForNotEditor
             // 
-            radioButtonForNotEditor.AutoSize = true;
-            radioButtonForNotEditor.Location = new System.Drawing.Point(13, 283);
-            radioButtonForNotEditor.Name = "radioButtonForNotEditor";
-            radioButtonForNotEditor.Size = new System.Drawing.Size(98, 19);
-            radioButtonForNotEditor.TabIndex = 7;
-            radioButtonForNotEditor.TabStop = true;
-            radioButtonForNotEditor.Text = "Для notEditor";
-            radioButtonForNotEditor.UseVisualStyleBackColor = true;
+            checkBoxForNotEditor.AutoSize = true;
+            checkBoxForNotEditor.Location = new System.Drawing.Point(12, 291);
+            checkBoxForNotEditor.Name = "checkBoxForNotEditor";
+            checkBoxForNotEditor.Size = new System.Drawing.Size(99, 19);
+            checkBoxForNotEditor.TabIndex = 8;
+            checkBoxForNotEditor.Text = "Для notEditor";
+            checkBoxForNotEditor.UseVisualStyleBackColor = true;
             // 
             // RemoveUnnecessaryLinesForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(799, 444);
-            Controls.Add(radioButtonForNotEditor);
+            Controls.Add(checkBoxForNotEditor);
             Controls.Add(textBoxNewCriteria);
             Controls.Add(labelOtherCriterias);
             Controls.Add(richTextBoxConsole);
@@ -189,7 +187,7 @@ namespace HelperForNotEditor
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             Name = "RemoveUnnecessaryLinesForm";
             Text = "Lines Deleter";
-            Load += Form1_Load;
+            Load += RemoveUnnecessaryLinesForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -208,7 +206,7 @@ namespace HelperForNotEditor
         private System.Windows.Forms.RichTextBox richTextBoxConsole;
         private System.Windows.Forms.Label labelOtherCriterias;
         private System.Windows.Forms.TextBox textBoxNewCriteria;
-        private System.Windows.Forms.RadioButton radioButtonForNotEditor;
+        private System.Windows.Forms.CheckBox checkBoxForNotEditor;
     }
 }
 

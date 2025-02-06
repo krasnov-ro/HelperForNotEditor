@@ -23,6 +23,7 @@ namespace HelperForNotEditor
 
         private void buttonLoadFile_Click(object sender, EventArgs e)
         {
+            #region можно вынести в отдельный класс который будет называться допустим FileOpener
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = "c:\\";
@@ -44,23 +45,16 @@ namespace HelperForNotEditor
                     }
                 }
             }
+            #endregion
             checkBoxUse.Checked = true;
             checkBoxWin.Checked = true;
             checkBoxOpn.Checked = true;
             buttonGoRemove.Enabled = true;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void buttonGoRemove_Click(object sender, EventArgs e)
         {
-            List<string> preNames = new List<string>();
-            foreach (Control c in this.Controls)
-            {
-                if (c is CheckBox)
-                {
-                    if (((CheckBox)c).Checked == true)
-                        preNames.Add(c.Text + "_");
-                }
-            }
+            List<string> preNames = GetSelectedCriterias(this.Controls);
 
             if (textBoxNewCriteria.Text.Length > 0)
             {
@@ -87,6 +81,14 @@ namespace HelperForNotEditor
             }
         }
 
+        private List<string> GetSelectedCriterias(Control.ControlCollection Controls)
+        {
+            return Controls.OfType<CheckBox>()
+                .Where(checkBox => checkBox.Checked)
+                .Select(checkBox => $"{checkBox.Text}_")
+                .ToList();
+        }
+
         public string ReformatText(string inputText, List<string> preNames)
         {
             string result = "{\n";
@@ -95,7 +97,7 @@ namespace HelperForNotEditor
             {
                 if (preNames.Any(p => contentArr[i].Contains(p)) || contentArr[i].Contains("LEVEL"))
                 {
-                    if (contentArr[i].Count(p => p == '\"') > 2 && radioButtonForNotEditor.Checked == true)
+                    if (contentArr[i].Count(p => p == '\"') > 2 && checkBoxForNotEditor.Checked == true)
                     {
                         var splitContent = contentArr[i].Split('\"');
                         for (int j = 0; j < splitContent.Length; j++)
@@ -107,11 +109,11 @@ namespace HelperForNotEditor
                             }
                         }
                     }
-                    else if (contentArr[i].Count(p => p == ',') > 1 && radioButtonForNotEditor.Checked == true)
+                    else if (contentArr[i].Count(p => p == ',') > 1 && checkBoxForNotEditor.Checked == true)
                     {
                         result = result + "    , " + contentArr[i].Replace("{", "").Replace("}", "").Replace(",", "").Replace("    ", "") + "\n";
                     }
-                    else if (radioButtonForNotEditor.Checked == true)
+                    else if (checkBoxForNotEditor.Checked == true)
                         result = result + contentArr[i].Replace("{", "").Replace("}", "") + "\n";
                     else
                         result = result + contentArr[i] + "\n";
@@ -122,27 +124,17 @@ namespace HelperForNotEditor
         }
 
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void RemoveUnnecessaryLinesForm_Load(object sender, EventArgs e)
         {
             buttonGoRemove.Enabled = false;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Form.ActiveForm.Close();
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        private void richTextBoxConsole_TextChanged(object sender, EventArgs e)
         {
             buttonGoRemove.Enabled = true;
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            buttonGoRemove.Enabled = true;
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void textBoxNewCriteria_TextChanged(object sender, EventArgs e)
         {
 
         }
